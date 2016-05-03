@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= "<?= " ?>Html::a(<?= $generator->generateString('Create ' . Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>, ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-<?= $generator->enablePjax ? '<?php Pjax::begin(); ?>' : '' ?>
+<?= $generator->enablePjax ? "<?php Pjax::begin(); ?>\n" : '' ?>
 <?php if ($generator->indexWidgetType === 'grid'): ?>
     <?= "<?= " ?>GridView::widget([
         'dataProvider' => $dataProvider,
@@ -62,7 +62,10 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
 }
 ?>
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn'
+                'template' => Yii::$app->user->can(Access::UPDATE) ? '{view} {update} {delete}' : '{view}',
+            ],
         ],
     ]); ?>
 <?php else: ?>
@@ -74,5 +77,5 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
         },
     ]) ?>
 <?php endif; ?>
-<?= $generator->enablePjax ? '<?php Pjax::end(); ?>' : '' ?>
+<?= $generator->enablePjax ? "\n<?php Pjax::end(); ?>" : '' ?>
 </div>

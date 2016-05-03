@@ -130,7 +130,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         $model = new <?= $modelClass ?>();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', '<?= $modelClass ?> created');
+            Yii::$app->session->setFlash('success', '<?= $modelClass ?> <?= $generator->generateString('created') ?> ');
             return $this->redirect(['view', <?= $urlParams ?>]);
         } else {
             return $this->render('create', [
@@ -149,7 +149,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         $model = $this->findModel(<?= $actionParams ?>);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', '<?= $modelClass ?> updated');
+            Yii::$app->session->setFlash('success', '<?= $modelClass ?> <?= $generator->generateString('updated') ?> ');
             return $this->redirect(['view', <?= $urlParams ?>]);
         } else {
             return $this->render('update', [
@@ -167,7 +167,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     {
         $model = $this->findModel(<?= $actionParams ?>);
         if ($model->delete()){
-          Yii::$app->session->setFlash('success', '<?= $modelClass ?> deleted');
+          Yii::$app->session->setFlash('success', '<?= $modelClass ?> <?= $generator->generateString('deleted') ?>');
         }
 
         return $this->redirect(['index']);

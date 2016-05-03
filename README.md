@@ -5,6 +5,7 @@ Core template extends basic gii template for a few things:
 * Commented sections in model
 * AccessController added to controller
 * Alert messages added to controller
+* Cancel button added to form
 
 ## Install
 
@@ -13,13 +14,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```bash
-$ php composer.phar require --prefer-dist yujin1st/gii-templates "*"
+$ php composer.phar require  yujin1st/gii-templates "@dev"
 ```
 
 or add
 
 ```json
-"yujin1st/gii-templates": "*"
+"yujin1st/gii-templates": "@dev"
 ```
 
 to the require section of your `composer.json` file.
@@ -31,7 +32,7 @@ Setup templates to gii configuration
 ```php
  $config['modules']['gii'] = [
     'class' => 'yii\gii\Module',
-    'generators' => [ //here
+    'generators' => [ 
       'crud' => [
         'class' => 'yii\gii\generators\crud\Generator',
         'templates' => [
