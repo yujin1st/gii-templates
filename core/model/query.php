@@ -40,13 +40,11 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->queryBaseClass, '\\
 
     /**
     * @return <?= $className ?>
-    */
-    /*
+    */ 
     public function active()
     {
     return $this->andWhere(['deleted'=>0]);
     }
-    */
 
     /**
      * @inheritdoc

@@ -35,6 +35,11 @@ use <?= ltrim($generator->modelClass, '\\') . (isset($modelAlias) ? " as $modelA
 class <?= $searchModelClass ?> extends <?= isset($modelAlias) ? $modelAlias : $modelClass ?>
 
 {
+
+  /** @var bool Skip deleted records */
+  public $onlyActive = false;
+
+
     /**
      * @inheritdoc
      */
@@ -64,7 +69,8 @@ class <?= $searchModelClass ?> extends <?= isset($modelAlias) ? $modelAlias : $m
     public function search($params)
     {
         $query = <?= isset($modelAlias) ? $modelAlias : $modelClass ?>::find();
-
+        
+        if ($this->onlyActive) $query->active();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

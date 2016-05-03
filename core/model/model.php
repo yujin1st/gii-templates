@@ -104,6 +104,25 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
     ];
   }
 
+  /**
+   * @return bool|int
+   * @throws yii\db\Exception
+   */
+  protected function deleteInternal() {
+    if (!$this->beforeDelete()) {
+      return false;
+    }
+
+    $this->deleted = 0;
+    $ok = $this->save(false);
+
+    $this->setOldAttributes(null);
+    $this->afterDelete();
+
+    return $ok;
+  }
+
+
 <?php if ($queryClassName): ?>
 <?php
     $queryClassFullName = ($generator->ns === $generator->queryNs) ? $queryClassName : '\\' . $generator->queryNs . '\\' . $queryClassName;

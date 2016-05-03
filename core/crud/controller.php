@@ -149,7 +149,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         $model = $this->findModel(<?= $actionParams ?>);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', '<?= $modelClass ?> <?= $generator->generateString('updated') ?> ');
+            Yii::$app->session->setFlash('success', '<?= $generator->generateString($modelClass . ' created') ?>');
             return $this->redirect(['view', <?= $urlParams ?>]);
         } else {
             return $this->render('update', [
@@ -167,7 +167,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     {
         $model = $this->findModel(<?= $actionParams ?>);
         if ($model->delete()){
-          Yii::$app->session->setFlash('success', '<?= $modelClass ?> <?= $generator->generateString('deleted') ?>');
+          Yii::$app->session->setFlash('success', '<?= $generator->generateString($modelClass . ' deleted') ?>');
         }
 
         return $this->redirect(['index']);
@@ -187,6 +187,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         /** @var <?= $modelClass ?>[] $models */
         $models = <?= $modelClass ?>::find()
           ->filterWhere(['like', 'title', $term])
+          //->active()
           ->limit(10)->all();
         if ($models) foreach ($models as $model) {
           $data[] = [
