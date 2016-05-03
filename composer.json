@@ -1,0 +1,43 @@
+{
+  "name": "yujin1st/gii-templates",
+  "description": "yii2 gii templates",
+  "keywords": [
+    "yii2",
+    "gii"
+  ],
+  "homepage": "https://github.com/yujin1st/gii-templates",
+  "type": "yii2-extension",
+  "license": "BSD-3-Clause",
+  "support": {
+    "issues": "https://github.com/yujin1st/gii-templates"
+  },
+  "authors": [
+    {
+      "name": "Evgeniy Bobrov",
+      "email": "yujin1st@gmail.com",
+      "homepage": "http://yujin1st.ru"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=5.4.0",
+    "yiisoft/yii2": ">=2.0.6"
+  },
+  "require-dev": {
+    "yiisoft/yii2-gii": "*"
+  },
+  "config": {
+    "process-timeout": 1800
+  },
+  "autoload": {
+    "psr-4": {
+      "yujin1st\\gii\\": ""
+    }
+  },
+  "extra": {
+    "asset-installer-paths": {
+      "npm-asset-library": "vendor/npm",
+      "bower-asset-library": "vendor/bower"
+    }
+  }
+}
