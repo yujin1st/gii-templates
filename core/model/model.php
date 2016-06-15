@@ -113,7 +113,7 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
       return false;
     }
 
-    $this->deleted = 0;
+    $this->deleted = 1;
     $ok = $this->save(false);
 
     $this->setOldAttributes(null);
