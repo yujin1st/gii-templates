@@ -37,6 +37,11 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
 {
 
 
+    /**
+     * @event Event an event that is triggered after a record is recovered.
+     */
+    const EVENT_AFTER_RECOVER = 'afterRecover';
+
     /** Active Record
     ******************************************************************** */
 
@@ -105,6 +110,8 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
   }
 
   /**
+   * Safe delete
+
    * @return bool|int
    * @throws yii\db\Exception
    */
@@ -119,6 +126,18 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
     $this->setOldAttributes(null);
     $this->afterDelete();
 
+    return $ok;
+  }
+
+
+  /**
+   * Recover deleted item
+   */
+  public function recover() {
+    $this->deleted = 0;
+    $ok = $this->save(false);
+
+    $this->trigger(self::EVENT_AFTER_RECOVER);
     return $ok;
   }
 
