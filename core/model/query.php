@@ -29,7 +29,7 @@ echo "<?php\n";
 ?>
 
 namespace <?= $generator->queryNs ?>;
-
+use <?= $modelFullClassName ?>
 /**
  * This is the ActiveQuery class for [[<?= $modelFullClassName ?>]].
  *
@@ -38,13 +38,33 @@ namespace <?= $generator->queryNs ?>;
 class <?= $className ?> extends <?= '\\' . ltrim($generator->queryBaseClass, '\\') . "\n" ?>
 {
 
-    /**
-    * @return <?= $className ?>
-    */ 
-    public function active()
-    {
-    return $this->andWhere(['deleted'=>0]);
-    }
+
+/**
+* @param $enabled
+* @return $this
+*/
+public function enabled($enabled = true) {
+return $this->andWhere([<?= $generator->modelClass ?>::tableName() . '.enabled' => (int)$enabled]);
+}
+
+/**
+* Filter deleted
+*
+* @param $deleted
+* @return $this
+*/
+public function deleted($deleted = false) {
+return $this->andWhere([<?= $generator->modelClass ?>::tableName() . '.deleted' => (int)$deleted]);
+}
+
+/**
+* Only visible and active nodes
+*
+* @return $this
+*/
+public function active() {
+return $this->enabled(true)->deleted(false);
+}
 
     /**
      * @inheritdoc

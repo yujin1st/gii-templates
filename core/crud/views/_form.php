@@ -10,36 +10,41 @@ use yii\helpers\StringHelper;
 $model = new $generator->modelClass();
 $safeAttributes = $model->safeAttributes();
 if (empty($safeAttributes)) {
-    $safeAttributes = $model->attributes();
+  $safeAttributes = $model->attributes();
 }
 
 echo "<?php\n";
 ?>
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+// use yii\widgets\ActiveForm;
+use yii\bootstrap\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model <?= ltrim($generator->modelClass, '\\') ?> */
-/* @var $form yii\widgets\ActiveForm */
+/* @var $form ActiveForm */
 ?>
 
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-form">
 
-    <?= "<?php " ?>$form = ActiveForm::begin(); ?>
+  <?= "<?php " ?>$form = ActiveForm::begin([
+  'layout' => 'horizontal',
+  ]); ?>
 
-<?php foreach ($generator->getColumnNames() as $attribute) {
+  <?php foreach ($generator->getColumnNames() as $attribute) {
     if (in_array($attribute, $safeAttributes)) {
-        echo "    <?= " . $generator->generateActiveField($attribute) . " ?>\n\n";
+      echo "    <?= " . $generator->generateActiveField($attribute) . " ?>\n\n";
     }
-} ?>
+  } ?>
 
-    <div class="form-group">
-        <?= "<?= " ?>Html::submitButton($model->isNewRecord ? <?= $generator->generateString('Create') ?> : <?= $generator->generateString('Update') ?>, ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-        <?= "<?= " ?>Html::a(<?= $generator->generateString('Cancel') ?>, $model->isNewRecord ? ['index'] : ['view', 'id' => $model->id], ['class' => 'btn btn-default']) ?>
+  <div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9">
+      <?= "<?= " ?>Html::submitButton($model->isNewRecord ? <?= $generator->generateString('Create') ?> : <?= $generator->generateString('Update') ?>, ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+      <?= "<?= " ?>Html::a(<?= $generator->generateString('Cancel') ?>, $model->isNewRecord ? ['index'] : ['view', 'id' => $model->id], ['class' => 'btn btn-default']) ?>
     </div>
+  </div>
 
-    
-    <?= "<?php " ?>ActiveForm::end(); ?>
+
+  <?= "<?php " ?>ActiveForm::end(); ?>
 
 </div>

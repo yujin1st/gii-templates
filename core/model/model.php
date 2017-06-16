@@ -19,6 +19,8 @@ echo "<?php\n";
 namespace <?= $generator->ns ?>;
 
 use yii;
+use modules\users\models\query\UserQuery;
+use modules\users\models\User;
 use yii\behaviors\TimestampBehavior;
 
 /**
@@ -37,11 +39,6 @@ use yii\behaviors\TimestampBehavior;
 class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
 {
 
-
-    /**
-     * @event Event an event that is triggered after a record is recovered.
-     */
-    const EVENT_AFTER_RECOVER = 'afterRecover';
 
     /** Active Record
     ******************************************************************** */
@@ -87,17 +84,7 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
         return [<?= "\n            " . implode(",\n            ", $rules) . ",\n        " ?>];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-<?php foreach ($labels as $name => $label): ?>
-            <?= "'$name' => " . $generator->generateString($label) . ",\n" ?>
-<?php endforeach; ?>
-        ];
-    }
+
 
   /** @inheritdoc */
   public function behaviors() {
@@ -111,8 +98,6 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
   }
 
   /**
-   * Safe delete
-
    * @return bool|int
    * @throws yii\db\Exception
    */
@@ -126,16 +111,6 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
 
     $this->afterDelete();
 
-    return $ok;
-  }
-
-
-  /**
-   * Recover deleted item
-   */
-  public function recover() {
-    $ok = $this->updateAttributes(['deleted' => 0]);
-    $this->trigger(self::EVENT_AFTER_RECOVER);
     return $ok;
   }
 
@@ -171,9 +146,24 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
 <?php endforeach; ?>
 
 
+    /** Labels
+    ******************************************************************** */
+
+   /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+<?php foreach ($labels as $name => $label): ?>
+            <?= "'$name' => " . $generator->generateString($label) . ",\n" ?>
+<?php endforeach; ?>
+        ];
+    }
 
     /** Properties
     ******************************************************************** */
+
 
     /** Main
     ******************************************************************** */

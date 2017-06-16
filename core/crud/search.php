@@ -36,8 +36,12 @@ class <?= $searchModelClass ?> extends <?= isset($modelAlias) ? $modelAlias : $m
 
 {
 
-  /** @var bool Skip deleted records */
-  public $onlyActive = false;
+/** @var bool Skip deleted records */
+public $onlyActive = false;
+/** @var bool Skip disabled records */
+public $onlyEnabled = false;
+/** @var bool Skip deleted records */
+public $excludeDeleted = true;
 
 
     /**
@@ -71,6 +75,8 @@ class <?= $searchModelClass ?> extends <?= isset($modelAlias) ? $modelAlias : $m
         $query = <?= isset($modelAlias) ? $modelAlias : $modelClass ?>::find();
         
         if ($this->onlyActive) $query->active();
+        if ($this->onlyEnabled) $query->enabled();
+        if ($this->excludeDeleted) $query->deleted(false);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

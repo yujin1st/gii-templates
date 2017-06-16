@@ -43,8 +43,10 @@ use <?= ltrim($generator->searchModelClass, '\\') . (isset($searchModelAlias) ? 
 use yii\data\ActiveDataProvider;
 <?php endif; ?>
 use <?= ltrim($generator->baseControllerClass, '\\') ?>;
-use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 /**
  * <?= $controllerClass ?> implements the CRUD actions for <?= $modelClass ?> model.
@@ -93,6 +95,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 <?php if (!empty($generator->searchModelClass)): ?>
         $searchModel = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>();
         $searchModel->onlyActive = true;
+        $searchModel->excludeDeleted = true;
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -128,10 +131,17 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     public function actionCreate()
     {
         $model = new <?= $modelClass ?>();
+        $model->createUserId = Yii::$app->user->id;
+        $model->updateUserId = Yii::$app->user->id;
+        $model->order = 0;
+        $model->enabled = 1;
+
+
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', '<?= $modelClass ?> <?= $generator->generateString('created') ?> ');
+            Yii::$app->session->setFlash('success', <?= $generator->generateString($modelClass.' created') ?> );
             return $this->redirect(['view', <?= $urlParams ?>]);
+            return $this->redirect(['update', <?= $urlParams ?>]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -147,10 +157,13 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     public function actionUpdate(<?= $actionParams ?>)
     {
         $model = $this->findModel(<?= $actionParams ?>);
+        $model->updateUserId = Yii::$app->user->id;
+
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', '<?= $generator->generateString($modelClass . ' created') ?>');
+            Yii::$app->session->setFlash('success', <?= $generator->generateString($modelClass . ' updated') ?>);
             return $this->redirect(['view', <?= $urlParams ?>]);
+            return $this->redirect(['update', <?= $urlParams ?>]);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -167,7 +180,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     {
         $model = $this->findModel(<?= $actionParams ?>);
         if ($model->delete()){
-          Yii::$app->session->setFlash('success', '<?= $generator->generateString($modelClass . ' deleted') ?>');
+          Yii::$app->session->setFlash('success', <?= $generator->generateString($modelClass . ' deleted') ?>);
         }
 
         return $this->redirect(['index']);
