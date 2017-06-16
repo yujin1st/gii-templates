@@ -19,6 +19,7 @@ echo "<?php\n";
 namespace <?= $generator->ns ?>;
 
 use yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "<?= $generator->generateTableName($tableName) ?>".
@@ -120,10 +121,9 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
       return false;
     }
 
-    $this->deleted = 1;
-    $ok = $this->save(false);
-
+    $ok = $this->updateAttributes(['deleted' => 1]);
     $this->setOldAttributes(null);
+
     $this->afterDelete();
 
     return $ok;
@@ -134,9 +134,7 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
    * Recover deleted item
    */
   public function recover() {
-    $this->deleted = 0;
-    $ok = $this->save(false);
-
+    $ok = $this->updateAttributes(['deleted' => 0]);
     $this->trigger(self::EVENT_AFTER_RECOVER);
     return $ok;
   }
