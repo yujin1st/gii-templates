@@ -43,18 +43,17 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->queryBaseClass, '\\
 * @param $enabled
 * @return $this
 */
-public function enabled($enabled = true) {
+public function enabled($enabled = true): self{
 return $this->andWhere([<?= $generator->modelClass ?>::tableName() . '.enabled' => (int)$enabled]);
 }
 
 /**
 * Filter deleted
 *
-* @param $deleted
 * @return $this
 */
-public function deleted($deleted = false) {
-return $this->andWhere([<?= $generator->modelClass ?>::tableName() . '.deleted' => (int)$deleted]);
+public function excludeDeleted(): self {
+return $this->andWhere([<?= $generator->modelClass ?>::tableName() . '.deleted' => 0]);
 }
 
 /**
@@ -63,10 +62,27 @@ return $this->andWhere([<?= $generator->modelClass ?>::tableName() . '.deleted' 
 * @return $this
 */
 public function active() {
-return $this->enabled(true)->deleted(false);
+return $this->enabled(true)->excludeDeleted();
 }
 
-    /**
+/**
+* Search by title
+*
+* @param $title
+* @param bool $exact
+* @return $this
+*/
+public function byTitle($title, $exact = true): self
+{
+if ($exact) {
+return $this->andWhere([<?= $generator->modelClass ?>::tableName() . '.title' => $title]);
+} else {
+return $this->andWhere(['like', <?= $generator->modelClass ?>::tableName() . '.title', $title]);
+}
+}
+
+
+/**
      * @inheritdoc
      * @return <?= $modelFullClassName ?>[]|array
      */

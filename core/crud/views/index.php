@@ -4,7 +4,7 @@ use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /* @var $this yii\web\View */
-/* @var $generator yii\gii\generators\crud\Generator */
+/* @var $generator \yujin1st\gii\core\crud\Generator */
 
 $urlParams = $generator->generateUrlParams();
 $nameAttribute = $generator->getNameAttribute();
@@ -13,6 +13,7 @@ echo "<?php\n";
 ?>
 
 use yii\helpers\Html;
+use kartik\icons\Icon;
 use <?= $generator->indexWidgetType === 'grid' ? "yii\\grid\\GridView" : "yii\\widgets\\ListView" ?>;
 <?= $generator->enablePjax ? 'use yii\widgets\Pjax;' : '' ?>
 
@@ -24,9 +25,6 @@ $this->title = <?= $generator->generateString(Inflector::pluralize(Inflector::ca
 $this->params['breadcrumbs'][] = $this->title;
 
 
-if (Yii::$app->user->can(Access::UPDATE)) {
-  $this->params['template']['actions'] = Html::a(Icon::show('plus', [], Icon::FA) . <?= $generator->generateString('Create ' . Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>, ['create'], ['class' => 'btn btn-success']);
-}
 ?>
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-index">
 
@@ -36,11 +34,11 @@ if (Yii::$app->user->can(Access::UPDATE)) {
 <?php endif; ?>
 
     <p>
-        <?= "<?= " ?>Html::a(Icon::show('plus', [], Icon::FA) . <?= $generator->generateString('Create ' . Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>, ['create'], ['class' => 'btn btn-success']) ?>
+        <?= "<?= " ?>Html::a(Icon::show('plus') . <?= $generator->generateString('Create ' . Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>, ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 <?= $generator->enablePjax ? "<?php Pjax::begin(); ?>\n" : '' ?>
 
-  <?= '<?php' ?> if ($dataProvider->totalCount): ?>
+  <?= '<?php' ?> if ($dataProvider->totalCount || $searchModel->hasData): ?>
 
 
 <?php if ($generator->indexWidgetType === 'grid'): ?>
@@ -54,7 +52,7 @@ if (Yii::$app->user->can(Access::UPDATE)) {
         'format' => 'raw',
         'value' => function ($model) {
           /** @var <?= $generator->modelClass; ?> $model */
-          return Html::a($model->title, [Yii::$app->user->can(Access::UPDATE) ? 'update' : 'view', 'id' => $model->id], ['data-pjax' => 0]);
+          return Html::a($model->title, ['update', 'id' => $model->id], ['data-pjax' => 0]);
         },
       ],
 
@@ -97,8 +95,8 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
 <?php endif; ?>
   <?= '<?php else: ?>' ?>
   <div class="text-center">
-    <p> <?= $generator->generateString('There is no any ' . Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass)))) ?></p>
-    <?= '<?=' ?> Html::a(Icon::show('plus', [], Icon::FA) . <?= $generator->generateString('Create ' . Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>, ['create'], ['class' => 'btn btn-success']) ?>
+    <p> <?= trim($generator->generateString('There is no any ' . Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass)))) ,"'")?></p>
+    <?= '<?=' ?> Html::a(Icon::show('plus') . <?= $generator->generateString('Create ' . Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>, ['create'], ['class' => 'btn btn-success']) ?>
   </div>
   <?= '<?php endif; ?>' ?>
 

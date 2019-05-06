@@ -4,16 +4,22 @@ use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /* @var $this yii\web\View */
-/* @var $generator yii\gii\generators\crud\Generator */
+/* @var $generator \yujin1st\gii\core\crud\Generator */
 
 echo "<?php\n";
 ?>
 
 use yii\helpers\Html;
+use kartik\icons\Icon;
 
 
 /* @var $this yii\web\View */
+<?php if($generator->formClass): ?>
+/* @var $model <?= ltrim($generator->formClass, '\\') ?> */
+<?php else: ?>
 /* @var $model <?= ltrim($generator->modelClass, '\\') ?> */
+<?php endif; ?>
+
 
 $this->title = <?= $generator->generateString('Create ' . Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>;
 $this->params['breadcrumbs'][] = ['label' => <?= $generator->generateString(Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass)))) ?>, 'url' => ['index']];

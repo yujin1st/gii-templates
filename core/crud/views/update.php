@@ -12,9 +12,15 @@ echo "<?php\n";
 ?>
 
 use yii\helpers\Html;
+use kartik\icons\Icon;
 
 /* @var $this yii\web\View */
-/* @var $model <?= ltrim($generator->modelClass, '\\') ?> */
+<?php if ($generator->formClass): ?>
+    /* @var $model <?= ltrim($generator->formClass, '\\') ?> */
+<?php else: ?>
+    /* @var $model <?= ltrim($generator->modelClass, '\\') ?> */
+<?php endif; ?>
+
 
 $this->title = $model->title . ': ' . <?= $generator->generateString('Updating') ?>;
 $this->params['breadcrumbs'][] = ['label' => <?= $generator->generateString(Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass)))) ?>, 'url' => ['index']];

@@ -44,6 +44,16 @@ public $onlyEnabled = false;
 public $excludeDeleted = true;
 
 
+/** @var int $page size */
+public $pageSize = 20;
+/** @var int */
+public $page = null;
+/** @var string */
+public $order;
+
+/** @var bool whether data were loaded */
+public $hasData = false;
+
     /**
      * @inheritdoc
      */
@@ -67,32 +77,56 @@ public $excludeDeleted = true;
      * Creates data provider instance with search query applied
      *
      * @param array $params
+     * @param array|null $formName
      *
-     * @return ActiveDataProvider
+     * @return <?= $modelClass ?>Query
      */
-    public function search($params)
+    public function search($params, $formName = null)
     {
         $query = <?= isset($modelAlias) ? $modelAlias : $modelClass ?>::find();
-        
+
         if ($this->onlyActive) $query->active();
         if ($this->onlyEnabled) $query->enabled();
-        if ($this->excludeDeleted) $query->deleted(false);
+        if ($this->excludeDeleted) $query->excludeDeleted();
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
 
-        $this->load($params);
+        $this->hasData = $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
-            return $dataProvider;
+            return $query;
         }
 
         // grid filtering conditions
         <?= implode("\n        ", $searchConditions) ?>
 
-        return $dataProvider;
+        return $query;
     }
+
+/**
+* @param array $params
+* @param null $formName
+* @return ActiveDataProvider
+*/
+public function searchDP($params = [], $formName = null): ActiveDataProvider
+{
+return $this->searchDPQuery($this->search($params, $formName));
+}
+
+/**
+* @param $query <?= $modelClass ?>Query
+* @return ActiveDataProvider
+*/
+public function searchDPQuery($query): ActiveDataProvider
+{
+return new ActiveDataProvider([
+'query' => $query,
+'pagination' => [
+'pageSize' => $this->pageSize,
+'page' => $this->page,
+],
+]);
+}
+
+
 }

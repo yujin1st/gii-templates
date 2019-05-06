@@ -14,9 +14,10 @@ use yii\helpers\StringHelper;
 
 
 /* @var $this yii\web\View */
-/* @var $generator yii\gii\generators\crud\Generator */
+/* @var $generator \yujin1st\gii\core\crud\Generator */
 
 $controllerClass = StringHelper::basename($generator->controllerClass);
+$formClass = StringHelper::basename($generator->formClass);
 $modelClass = StringHelper::basename($generator->modelClass);
 $searchModelClass = StringHelper::basename($generator->searchModelClass);
 if ($modelClass === $searchModelClass) {
@@ -36,6 +37,7 @@ echo "<?php\n";
 namespace <?= StringHelper::dirname(ltrim($generator->controllerClass, '\\')) ?>;
 
 use yii;
+use <?= ltrim($generator->formClass, '\\') ?>;
 use <?= ltrim($generator->modelClass, '\\') ?>;
 <?php if (!empty($generator->searchModelClass)): ?>
 use <?= ltrim($generator->searchModelClass, '\\') . (isset($searchModelAlias) ? " as $searchModelAlias" : "") ?>;
@@ -60,7 +62,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -68,17 +70,19 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 
 
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'rules' => [
                     [
                         'actions' => ['view', 'index', 'search'],
                         'allow' => true,
-                        'roles' => [Access::VIEW],
+                        // 'roles' => [Access::VIEW],
+                        'roles' => ['@'],
                     ],
                     [
                         'actions' => ['create', 'update', 'delete'],
                         'allow' => true,
-                        'roles' => [Access::UPDATE],
+                        // 'roles' => [Access::UPDATE],
+                        'roles' => ['@'],
                     ],
                 ],
             ],
@@ -96,7 +100,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         $searchModel = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>();
         $searchModel->onlyActive = true;
         $searchModel->excludeDeleted = true;
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->searchDP(Yii::$app->request->queryParams);
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -116,7 +120,8 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      * Displays a single <?= $modelClass ?> model.
      * <?= implode("\n     * ", $actionParamComments) . "\n" ?>
      * @return mixed
-     */
+    * @throws NotFoundHttpException
+    */
     public function actionView(<?= $actionParams ?>)
     {
         return $this->render('view', [
@@ -130,34 +135,46 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public function actionCreate()
     {
+
+<?php if($generator->formClass): ?>
+        $model = new <?= $formClass ?>();
+<?php else: ?>
         $model = new <?= $modelClass ?>();
         $model->createUserId = Yii::$app->user->id;
         $model->updateUserId = Yii::$app->user->id;
         $model->order = 0;
         $model->enabled = 1;
-
-
+<?php endif; ?>
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->session->setFlash('success', <?= $generator->generateString($modelClass.' created') ?> );
             return $this->redirect(['view', <?= $urlParams ?>]);
             return $this->redirect(['update', <?= $urlParams ?>]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
+        } 
+        return $this->render('create', [
+            'model' => $model,
+        ]);
+
+
+
     }
 
     /**
      * Updates an existing <?= $modelClass ?> model.
      * <?= implode("\n     * ", $actionParamComments) . "\n" ?>
+    * @throws NotFoundHttpException
      * @return mixed
      */
     public function actionUpdate(<?= $actionParams ?>)
     {
+<?php if ($generator->formClass): ?>
+        $model = new <?= $formClass ?>($this->findModel(<?= $actionParams ?>));
+<?php else: ?>
         $model = $this->findModel(<?= $actionParams ?>);
         $model->updateUserId = Yii::$app->user->id;
+<?php endif; ?>
+
+
 
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -174,6 +191,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     /**
      * Deletes an existing <?= $modelClass ?> model.
      * <?= implode("\n     * ", $actionParamComments) . "\n" ?>
+    * @throws NotFoundHttpException
      * @return mixed
      */
     public function actionDelete(<?= $actionParams ?>)

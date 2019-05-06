@@ -4,7 +4,7 @@ use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /* @var $this yii\web\View */
-/* @var $generator yii\gii\generators\crud\Generator */
+/* @var $generator \yujin1st\gii\core\crud\Generator */
 
 /* @var $model \yii\db\ActiveRecord */
 $model = new $generator->modelClass();
@@ -18,7 +18,8 @@ echo "<?php\n";
 
 use yii\helpers\Html;
 // use yii\widgets\ActiveForm;
-use yii\bootstrap\ActiveForm;
+use yii\bootstrap4\ActiveForm;
+use kartik\icons\Icon;
 
 /* @var $this yii\web\View */
 /* @var $model <?= ltrim($generator->modelClass, '\\') ?> */
@@ -37,12 +38,22 @@ use yii\bootstrap\ActiveForm;
     }
   } ?>
 
-  <div class="form-group">
-    <div class="col-sm-offset-3 col-sm-9">
-      <?= "<?= " ?>Html::submitButton($model->isNewRecord ? <?= $generator->generateString('Create') ?> : <?= $generator->generateString('Update') ?>, ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-      <?= "<?= " ?>Html::a(<?= $generator->generateString('Cancel') ?>, $model->isNewRecord ? ['index'] : ['view', 'id' => $model->id], ['class' => 'btn btn-default']) ?>
+    <div class="form-group">
+        <div class="offset-sm-3 col-sm-9">
+            <?= "<?= " ?> Html::submitButton(Icon::show('check') . ($model->model->isNewRecord ? 'Добавить' : 'Сохранить'),
+                ['class' => $model->model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+            <?= "<?= " ?> Html::a(Icon::show('arrow-left') . 'К списку', ['index'], ['class' => 'btn btn-default']) ?>
+            <?= "<?php" ?> if (!$model->model->isNewRecord): ?>
+            <?= "<?= " ?> Html::a(Icon::show('trash') . 'Удалить ', ['delete', 'id' => $model->model->id],
+                    [
+                        'class' => 'btn btn-danger',
+                        'data' => ['confirm' => 'Вы действительно хотите удалить ?']
+                    ]) ?>
+            <?= "<?php endif; ?>" ?>
+
+        </div>
     </div>
-  </div>
+
 
 
   <?= "<?php " ?>ActiveForm::end(); ?>

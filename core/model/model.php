@@ -114,6 +114,29 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
     return $ok;
   }
 
+/**
+* @inheritDoc
+* @param bool $insert
+* @return bool
+*/
+public function beforeSave($insert)
+{
+if (!parent::beforeSave($insert)) {
+return false;
+}
+if ($insert) {
+$this->setDefaultAttributes();
+}
+return true;
+}
+
+/**
+* Default attributes
+*/
+private function setDefaultAttributes()
+{
+}
+
 
 <?php if ($queryClassName): ?>
 <?php
